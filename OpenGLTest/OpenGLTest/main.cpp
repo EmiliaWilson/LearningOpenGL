@@ -135,18 +135,38 @@ int main()
 	glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); //manual
 	ourShader.setInt("texture2", 1);
 
+
+    unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+
 		ourShader.setFloat("alpha", alpha);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture[0]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture[1]);
+
         glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+		float scaleParam = static_cast<float>(abs(sin(glfwGetTime())));
+		trans = glm::scale(trans, glm::vec3(scaleParam, scaleParam, scaleParam));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &trans[0][0]);
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -158,6 +178,7 @@ int main()
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
  
     glfwTerminate();
     return 0;
