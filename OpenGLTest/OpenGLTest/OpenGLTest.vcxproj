@@ -24,6 +24,7 @@
     <ProjectGuid>{ea3db8d4-6fd6-4950-bf11-d46bba1605be}</ProjectGuid>
     <RootNamespace>OpenGLTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>LearningOpenGL</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -144,8 +145,10 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="3.3.shader.fs" />
-    <None Include="3.3.shader.vs" />
+    <None Include="lightCubeShader.vs" />
+    <None Include="lightShader.fs" />
+    <None Include="lightShader.vs" />
+    <None Include="lightCubeShader.fs" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGLTest.rc" />
