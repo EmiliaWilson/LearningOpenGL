@@ -20,6 +20,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 void processInput(GLFWwindow* window);
 
+unsigned int loadTexture(char const * path);
+
 //settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -70,62 +72,49 @@ int main()
 	Shader lightCubeShader("lightCubeShader.vs", "lightCubeShader.fs");
 
     float vertices[] = {
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+		// positions          // normals           // texture coords
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 
-		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 	};
-	/*
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(2.0f, 5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f, 3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f, 2.0f, -2.5f),
-		glm::vec3(1.5f, 0.2f, -1.5f),
-		glm::vec3(-1.3f, 1.0f, -1.5f)
-	};
-	*/
 
 
     unsigned int VBO, VAO;
@@ -142,70 +131,33 @@ int main()
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // position atribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 	
-	//normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+	//normal attribut
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	// texture atribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	unsigned int lightCubeVAO;
 	glGenVertexArrays(1, &lightCubeVAO);
 	glBindVertexArray(lightCubeVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	unsigned int diffuseMap = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\container2.png");
+	unsigned int specularMap = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\container2_specular.png");
+	unsigned int emissionMap = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\container2_emission.png");
+	lightShader.use();
+	lightShader.setInt("material.diffuse", 0);
+	lightShader.setInt("material.specular", 1);
+	lightShader.setInt("material.emission", 2);
 
-	/*
-    // texture atribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-    //creating texture
-    unsigned int texture[2];
-	glGenTextures(2, texture);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-    // set texture wrapping options
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    // loading texture from file and generating mipmap
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\container.jpg", &width, &height, &nrChannels, 0);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-    else {
-		std::cout << "Failed to load texture" << std::endl;
-    }
-	stbi_image_free(data); //free image memory
-
-    //set second texture
-    glBindTexture(GL_TEXTURE_2D, texture[1]);
-	// set texture wrapping options
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	stbi_set_flip_vertically_on_load(true);
-    data = stbi_load("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\awesomeface.png", &width, &height, &nrChannels, 0);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data); // free image memory
-
-	*/
 
     //glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -213,9 +165,7 @@ int main()
 
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//ourShader.use();
-	//glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); //manual
-	//ourShader.setInt("texture2", 1);
+	
 
 
 
@@ -244,19 +194,17 @@ int main()
 		lightColor.z = 1.0f;
 
 	    glm::vec3 specularColor = lightColor * glm::vec3(1.0f);
-		glm::vec3 diffuseColor = lightColor * glm::vec3(1.0f);
-		glm::vec3 ambientColor = lightColor * glm::vec3(1.0f);
+		glm::vec3 diffuseColor = lightColor * glm::vec3(0.75f);
+		glm::vec3 ambientColor = lightColor * glm::vec3(0.3f);
 
 		lightShader.use();
+		lightShader.setVec3("lightPos", lightPos);
+
 		lightShader.setVec3("light.specular", specularColor);
 		lightShader.setVec3("light.diffuse", diffuseColor);
 		lightShader.setVec3("light.ambient", ambientColor);
 
-		lightShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
-		lightShader.setVec3("material.diffuse", 0.0f, 0.5098f, 0.5098f);
-		lightShader.setVec3("material.specular", 0.502f, 0.502f, 0.502f);
-		lightShader.setFloat("material.shininess", (0.25f * 128.0f));
-		lightShader.setVec3("lightPos", lightPos);
+		lightShader.setFloat("material.shininess", 64.0f);
 
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -265,6 +213,13 @@ int main()
 
 		glm::mat4 model = glm::mat4(1.0f);
 		lightShader.setMat4("model", model);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, specularMap);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, emissionMap);
 
         glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -336,7 +291,8 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
 	camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
@@ -358,4 +314,43 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	}
+}
+
+unsigned int loadTexture(char const* path)
+{
+	// creating texture
+	unsigned int texture;
+	glGenTextures(1, &texture);
+
+
+	// loading texture from file and generating mipmap
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data) {
+
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// set texture wrapping options
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	}
+	else {
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data); // free image memory
+
+	return texture;
 }
