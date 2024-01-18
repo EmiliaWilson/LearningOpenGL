@@ -58,6 +58,8 @@ in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
 
+uniform bool flashlightOn;
+
 uniform vec3 viewPos;
 
 uniform Material material;
@@ -73,12 +75,14 @@ void main()
 {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize (viewPos-FragPos);
-
+    //vec3 result = vec3(0.0, 0.0, 0.0);
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     for (int i = 0; i < NR_POINT_LIGHTS; i++) {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     }
-    result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
+    if (flashlightOn) {
+        result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
+    }
     vec3 emission = texture(material.emission, TexCoords).rgb;
     float distance = length(viewPos-FragPos);
     float attenuation = 1.0 / (material.constant + material.linear * distance + material.quadratic * (distance * distance));
@@ -115,7 +119,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
     float distance = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-
+    ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
         

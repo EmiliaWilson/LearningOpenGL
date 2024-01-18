@@ -38,6 +38,12 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="lightShader.vs">
@@ -50,6 +56,12 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightCubeShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="modelShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="modelShader.vs">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
