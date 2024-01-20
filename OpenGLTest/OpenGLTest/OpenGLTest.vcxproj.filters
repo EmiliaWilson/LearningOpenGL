@@ -46,10 +46,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="depthTesting.fs">
+    <None Include="blendingTest.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="depthTesting.vs">
+    <None Include="blendingTest.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightCubeShader.fs">

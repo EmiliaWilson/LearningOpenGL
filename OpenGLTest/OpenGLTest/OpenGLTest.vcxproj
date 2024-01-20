@@ -147,8 +147,8 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="depthTesting.fs" />
-    <None Include="depthTesting.vs" />
+    <None Include="blendingTest.fs" />
+    <None Include="blendingTest.vs" />
     <None Include="lightCubeShader.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
