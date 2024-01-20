@@ -70,6 +70,12 @@
     <None Include="modelShader.vs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="shaderSingleColor.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="stencilTesting.vs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGLTest.rc">

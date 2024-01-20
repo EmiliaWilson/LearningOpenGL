@@ -155,6 +155,8 @@
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
+    <None Include="shaderSingleColor.fs" />
+    <None Include="stencilTesting.vs" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGLTest.rc" />
