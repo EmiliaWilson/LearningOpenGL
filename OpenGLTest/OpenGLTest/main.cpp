@@ -85,9 +85,9 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
 
  
 	Shader shader("blendingTest.vs", "blendingTest.fs");
@@ -121,6 +121,8 @@ int main()
 		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	
 
 	//Model ourModel("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack.obj");
 
@@ -295,13 +297,13 @@ int main()
 
 	float quadVertices[] = {
 		// positions   // texCoords
-		-1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 0.0f,
-
-		-1.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, -1.0f, 1.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f
+		-.5f, 1.0f, 0.0f, 1.0f,
+		-.5f, 0.75f, 0.0f, 0.0f,
+		0.5f, 0.75f, 1.0f, 0.0f,
+		
+		-0.5f, 1.0f, 0.0f, 1.0f,
+		0.5f, 0.75f, 1.0f, 0.0f,
+		0.5f, 1.0f, 1.0f, 1.0f
 	};
 
 	unsigned int postVAO, postVBO;
@@ -354,18 +356,23 @@ int main()
 		
 		//
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 		shader.use();
-		glm::mat4 model = glm::mat4(1.0f);
+		camera.Yaw += 180.0f;
+		camera.ProcessMouseMovement(0, 0, false);
 		glm::mat4 view = camera.GetViewMatrix();
+		camera.Yaw -= 180.0f;
+		camera.ProcessMouseMovement(0, 0, true);
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
 
-
+		
 		// floor
 		glBindVertexArray(planeVAO);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, floorTexture);
+		glm::mat4 model = glm::mat4(1.0f);
 		shader.setMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
@@ -384,9 +391,52 @@ int main()
 		glBindVertexArray(0);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		view = camera.GetViewMatrix();
+		shader.setMat4("view", view);
+
+
+		//glEnable(GL_DEPTH_TEST);
+		// glEnable(GL_CULL_FACE);
+		//  floor
+		glBindVertexArray(planeVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, floorTexture);
+		model = glm::mat4(1.0f);
+		shader.setMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+
+		// cubes
+		glBindVertexArray(cubeVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, cubeTexture);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+		shader.setMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+
+
+		//glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT);
+
+		screenShader.use();
+		glBindVertexArray(postVAO);
+	    glDisable(GL_DEPTH_TEST);
+		//glDisable(GL_CULL_FACE);
+		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+
+		
+
+		/*
 		screenShader.use();
 		glBindVertexArray(postVAO);
 		glDisable(GL_DEPTH_TEST);
@@ -394,7 +444,10 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
+		*/
+		
 		// texture quad
+		
 
 		
 		//glDisable(GL_CULL_FACE);
