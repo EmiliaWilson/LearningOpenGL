@@ -268,6 +268,7 @@ int main()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	
+	Model ourModel = Model("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack.obj");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -293,6 +294,7 @@ int main()
 		glm::mat4 model = glm::mat4(1.0f);
 	    glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		shader.setMat4("model", model);
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
 		shader.setVec3("cameraPos", camera.Position);
@@ -309,6 +311,7 @@ int main()
 		glBindVertexArray(0);
 		*/
 		// cubes
+		/*
 		glBindVertexArray(cubeVAO);
 		//glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
@@ -320,6 +323,9 @@ int main()
 		shader.setMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
+		*/
+
+		ourModel.Draw(shader);
 
 		skyboxShader.use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
@@ -334,8 +340,6 @@ int main()
 
 		//glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);
-
-
 	
 	
 		
