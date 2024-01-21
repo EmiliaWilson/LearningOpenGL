@@ -149,13 +149,13 @@
   <ItemGroup>
     <None Include="blendingTest.fs" />
     <None Include="blendingTest.vs" />
-    <None Include="lightCubeShader.vs" />
+    <None Include="postProcessing.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
-    <None Include="shaderSingleColor.fs" />
+    <None Include="postProcessing.fs" />
     <None Include="stencilTesting.vs" />
   </ItemGroup>
   <ItemGroup>

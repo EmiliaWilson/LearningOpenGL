@@ -91,6 +91,36 @@ int main()
 
  
 	Shader shader("blendingTest.vs", "blendingTest.fs");
+	Shader screenShader("postProcessing.vs", "postProcessing.fs");
+
+	// Generating new framebuffer
+	// -----------------------------
+	unsigned int framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	unsigned int textureColorBuffer; //generate texture for framebuffer
+	glGenTextures(1, &textureColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,textureColorBuffer, 0);
+
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Model ourModel("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack.obj");
 
@@ -185,17 +215,20 @@ int main()
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top-left
 		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f	// bottom-left
 	};
+
+	
 	float planeVertices[] = {
 		// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
 		5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
-		-5.0f, -0.5f, -5.0f, 0.0f, 0.0f,
-		-5.0f, -0.5f, 5.0f, 0.0f, 2.0f,
+		-5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
+		-5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
 
 		5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
-		5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
-		-5.0f, -0.5f, -5.0f, 2.0f, 2.0f
+		5.0f, -0.5f, -5.0f, 2.0f, 2.0f,
+		-5.0f, -0.5f, -5.0f, 0.0f, 2.0f
 	};
 
+	/*
 	
 	 float transparentVertices[] = {
 		// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
@@ -207,12 +240,17 @@ int main()
 		1.0f, 0.5f, 0.0f, 1.0f, 1.0f,
 		1.0f, -0.5f, 0.0f, 1.0f, 0.0f
 	};
+
+	
 	std::vector<glm::vec3> windows;
 	windows.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
 	windows.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
 	windows.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
 	windows.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
-	windows.push_back(glm::vec3(0.5f, 0.0f, -0.6f));  
+	windows.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
+	*/
+
+
 	// cube VAO
 	unsigned int cubeVAO, cubeVBO;
 	glGenVertexArrays(1, &cubeVAO);
@@ -237,6 +275,8 @@ int main()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
+
+	/*
 	// grass VAO
 	unsigned int transparentVAO, transparentVBO;
 	glGenVertexArrays(1, &transparentVAO);
@@ -249,17 +289,48 @@ int main()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
+	*/
+
+	// quad for post processing with additional framebuffer
+
+	float quadVertices[] = {
+		// positions   // texCoords
+		-1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f,
+
+		-1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f
+	};
+
+	unsigned int postVAO, postVBO;
+	glGenVertexArrays(1, &postVAO);
+	glGenBuffers(1, &postVBO);
+	glBindVertexArray(postVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, postVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glBindVertexArray(0);
+
 
 	// load textures
 	// -------------
-	unsigned int cubeTexture = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\marble.jpg", GL_REPEAT);
+	unsigned int cubeTexture = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\container.jpg", GL_REPEAT);
 	unsigned int floorTexture = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\metal.png", GL_REPEAT);
-	unsigned int transparentTexture = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\blending_transparent_window.png", GL_CLAMP_TO_EDGE);
+	//unsigned int transparentTexture = loadTexture("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\Images\\blending_transparent_window.png", GL_CLAMP_TO_EDGE);
 
 	// shader configuration
 	// --------------------
 	shader.use();
 	shader.setInt("texture1", 0);
+
+	screenShader.setInt("screenTexture", 0);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	
 
@@ -277,10 +348,12 @@ int main()
 
 		// render
 		// ------
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		shader.use();
 		glm::mat4 model = glm::mat4(1.0f);
@@ -308,10 +381,25 @@ int main()
 		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
 		shader.setMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		screenShader.use();
+		glBindVertexArray(postVAO);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+		// texture quad
 
 		
-		glDisable(GL_CULL_FACE);
+		//glDisable(GL_CULL_FACE);
 
+		/*
 		//grass
 		glBindVertexArray(transparentVAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -330,12 +418,10 @@ int main()
 
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
-	
 		glBindVertexArray(0);
+		*/
+	
 		
-
-
-
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
@@ -344,8 +430,10 @@ int main()
 
 	glDeleteVertexArrays(1, &cubeVAO);
 	glDeleteVertexArrays(1, &planeVAO);
+	glDeleteVertexArrays(1, &postVAO);
 	glDeleteBuffers(1, &cubeVBO);
 	glDeleteBuffers(1, &planeVBO);
+	glDeleteBuffers(1, &postVBO);
 
  
     glfwTerminate();
