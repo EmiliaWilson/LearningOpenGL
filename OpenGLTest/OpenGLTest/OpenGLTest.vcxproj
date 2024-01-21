@@ -147,15 +147,15 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="blendingTest.fs" />
-    <None Include="blendingTest.vs" />
-    <None Include="postProcessing.vs" />
+    <None Include="cubeShader.fs" />
+    <None Include="cubeShader.vs" />
+    <None Include="skyboxShader.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
-    <None Include="postProcessing.fs" />
+    <None Include="skyboxShader.fs" />
     <None Include="stencilTesting.vs" />
   </ItemGroup>
   <ItemGroup>

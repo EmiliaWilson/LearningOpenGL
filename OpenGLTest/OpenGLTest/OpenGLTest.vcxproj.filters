@@ -46,16 +46,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="blendingTest.fs">
+    <None Include="cubeShader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="blendingTest.vs">
+    <None Include="cubeShader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightCubeShader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="postProcessing.vs">
+    <None Include="skyboxShader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightShader.fs">
@@ -70,7 +70,7 @@
     <None Include="modelShader.vs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="postProcessing.fs">
+    <None Include="skyboxShader.fs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="stencilTesting.vs">
