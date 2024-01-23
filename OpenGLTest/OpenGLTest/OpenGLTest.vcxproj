@@ -150,13 +150,13 @@
     <None Include="cubeShader.fs" />
     <None Include="cubeShader.vs" />
     <None Include="geometryShader.gs" />
-    <None Include="skyboxShader.vs" />
+    <None Include="normalShader.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
-    <None Include="skyboxShader.fs" />
+    <None Include="normalShader.fs" />
     <None Include="stencilTesting.vs" />
   </ItemGroup>
   <ItemGroup>

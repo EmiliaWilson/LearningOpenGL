@@ -81,7 +81,8 @@ int main()
 
  
 	Shader shader("cubeShader.vs", "cubeShader.fs");
-	shader.attachGeometryShader("geometryShader.gs");
+	Shader normalShader("normalShader.vs", "normalShader.fs");
+	normalShader.attachGeometryShader("geometryShader.gs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
@@ -120,8 +121,14 @@ int main()
 		shader.setMat4("view", view);
 		shader.setMat4("model", model);
 		
-		shader.setFloat("time", static_cast<float>(glfwGetTime()));
 		backpack.Draw(shader);
+
+		normalShader.use();
+		normalShader.setMat4("projection", projection);
+		normalShader.setMat4("view", view);
+		normalShader.setMat4("model", model);
+		
+		backpack.Draw(normalShader);
 	
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

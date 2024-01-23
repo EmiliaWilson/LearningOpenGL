@@ -55,7 +55,7 @@
     <None Include="lightCubeShader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="skyboxShader.vs">
+    <None Include="normalShader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightShader.fs">
@@ -70,7 +70,7 @@
     <None Include="modelShader.vs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="skyboxShader.fs">
+    <None Include="normalShader.fs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="stencilTesting.vs">
