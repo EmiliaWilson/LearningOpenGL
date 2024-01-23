@@ -149,6 +149,7 @@
   <ItemGroup>
     <None Include="cubeShader.fs" />
     <None Include="cubeShader.vs" />
+    <None Include="geometryShader.gs" />
     <None Include="skyboxShader.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
