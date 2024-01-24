@@ -70,7 +70,7 @@
     <None Include="modelShader.vs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="normalShader.fs">
+    <None Include="asteroidShader.fs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="stencilTesting.vs">

@@ -156,7 +156,7 @@
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
-    <None Include="normalShader.fs" />
+    <None Include="asteroidShader.fs" />
     <None Include="stencilTesting.vs" />
   </ItemGroup>
   <ItemGroup>

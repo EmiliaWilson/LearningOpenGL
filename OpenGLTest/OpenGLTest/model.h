@@ -19,6 +19,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 class Model
 {
 public:
+	std::vector<Mesh> meshes;
 	Model(std::string const &path)
 	{
 		loadModel(path);
@@ -32,7 +33,6 @@ public:
 
 private:
 	std::vector<Texture> textures_loaded;
-	std::vector<Mesh> meshes;
 	std::string directory;
 
 	void loadModel(std::string const &path) {
