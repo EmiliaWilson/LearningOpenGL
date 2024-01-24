@@ -46,16 +46,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="instancingShader.fs">
+    <None Include="aaShader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="instancingShader.vs">
+    <None Include="aaShader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightCubeShader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="normalShader.vs">
+    <None Include="aaPostShader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightShader.fs">
@@ -70,7 +70,7 @@
     <None Include="modelShader.vs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="asteroidShader.fs">
+    <None Include="aaPostShader.fs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="stencilTesting.vs">

@@ -147,16 +147,16 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="instancingShader.fs" />
-    <None Include="instancingShader.vs" />
+    <None Include="aaShader.fs" />
+    <None Include="aaShader.vs" />
     <None Include="geometryShader.gs" />
-    <None Include="normalShader.vs" />
+    <None Include="aaPostShader.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
-    <None Include="asteroidShader.fs" />
+    <None Include="aaPostShader.fs" />
     <None Include="stencilTesting.vs" />
   </ItemGroup>
   <ItemGroup>
