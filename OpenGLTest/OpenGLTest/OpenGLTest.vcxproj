@@ -147,8 +147,8 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cubeShader.fs" />
-    <None Include="cubeShader.vs" />
+    <None Include="instancingShader.fs" />
+    <None Include="instancingShader.vs" />
     <None Include="geometryShader.gs" />
     <None Include="normalShader.vs" />
     <None Include="lightShader.fs" />

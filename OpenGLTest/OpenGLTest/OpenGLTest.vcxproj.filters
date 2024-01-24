@@ -46,10 +46,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="cubeShader.fs">
+    <None Include="instancingShader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="cubeShader.vs">
+    <None Include="instancingShader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="lightCubeShader.fs">

@@ -78,20 +78,56 @@ int main()
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 	
+	float quadVertices[] = {
+		// positions     // colors
+		-0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
+		0.05f, -0.05f, 0.0f, 1.0f, 0.0f,
+		-0.05f, -0.05f, 0.0f, 0.0f, 1.0f,
 
+		-0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
+		0.05f, -0.05f, 0.0f, 1.0f, 0.0f,
+		0.05f, 0.05f, 0.0f, 1.0f, 1.0f
+	};  
+
+    unsigned int quadVAO, quadVBO;
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	// setting up instance 
+	glm::vec2 translations[100];
+	int index = 0;
+	float offset = 0.1f;
+	for (int y = -10; y < 10; y += 2) {
+		for (int x = -10; x < 10; x += 2) {
+			glm::vec2 translation;
+			translation.x = (float)x / 10.0f + offset;
+			translation.y = (float)y / 10.0f + offset;
+			translations[index++] = translation;
+		}
+	}  
  
-	Shader shader("cubeShader.vs", "cubeShader.fs");
-	Shader normalShader("normalShader.vs", "normalShader.fs");
-	normalShader.attachGeometryShader("geometryShader.gs");
+	Shader shader("instancingShader.vs", "instancingShader.fs");
+	//Shader normalShader("normalShader.vs", "normalShader.fs");
+	//normalShader.attachGeometryShader("geometryShader.gs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 
-	Model backpack("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack.obj");
+	//Model backpack("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack.obj");
 	
 	// shader configuration
 	// --------------------
 	shader.use();
+	for (unsigned int i = 0; i < 100; i++) {
+		shader.setVec2(("offsets[" + std::to_string(i) + "]"), translations[i]);
+	}
 
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -117,18 +153,11 @@ int main()
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		shader.use();
-		shader.setMat4("projection", projection);
-		shader.setMat4("view", view);
-		shader.setMat4("model", model);
 		
-		backpack.Draw(shader);
+		glBindVertexArray(quadVAO);
+		glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
-		normalShader.use();
-		normalShader.setMat4("projection", projection);
-		normalShader.setMat4("view", view);
-		normalShader.setMat4("model", model);
-		
-		backpack.Draw(normalShader);
+
 	
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
