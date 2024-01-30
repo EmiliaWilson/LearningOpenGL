@@ -87,6 +87,7 @@ void main()
     float distance = length(viewPos-FragPos);
     float attenuation = 1.0 / (material.constant + material.linear * distance + material.quadratic * (distance * distance));
     result = emission*attenuation + result;
+    result = pow(result, vec3(1.0/2.2)); //gamma correction
     FragColor = vec4(result, 1.0);
 }
 
