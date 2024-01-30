@@ -82,7 +82,7 @@ int main()
     Shader ourShader("modelShader.vs", "modelShader.fs");
 	Shader lightCubeShader("lightCubeShader.vs", "lightCubeShader.fs");
 
-	Model ourModel("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack.obj");
+	Model ourModel("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack\\backpack.obj");
 
 	//light model
 
