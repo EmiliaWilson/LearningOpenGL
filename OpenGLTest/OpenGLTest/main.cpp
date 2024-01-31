@@ -22,8 +22,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 //settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 
 //time values
@@ -79,10 +79,10 @@ int main()
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 
-    Shader ourShader("modelShader.vs", "modelShader.fs");
+    Shader ourShader("lightShader.vs", "lightShader.fs");
 	Shader lightCubeShader("lightCubeShader.vs", "lightCubeShader.fs");
 
-	Model ourModel("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\backpack\\backpack.obj");
+	Model wavePlane("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\waves\\wavePlane.obj");
 
 	//light model
 
@@ -155,7 +155,8 @@ int main()
 	float quadraticConstant = 0.017f;
 	
 	
-	
+	glm::vec3 lightColor = glm::vec3(1.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 1.0f, 0.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -165,36 +166,16 @@ int main()
 
         processInput(window);
 
-		/*
-		glm::vec3 movingPointLightPositions[] = {
-			glm::vec3(1.0f),
-			glm::vec3(1.0f),
-			glm::vec3(1.0f),
-			glm::vec3(1.0f)
-		};
-		for (int i = 0; i < 4; i++) {
-			movingPointLightPositions[i] = glm::vec3(pointLightPositions[i].x, pointLightPositions[i].y, (sin(glfwGetTime()) * 2 + pointLightPositions[i].z));
-		}
-		*/
 
         glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::vec3 lightColorArray[] = {
-			glm::vec3(sin(glfwGetTime()*0.33f) * 3.0f, sin(glfwGetTime() * 0.5f) * 3.0f, cos(glfwGetTime()*2.0f) * 3.0f)
-		};
-		glm::vec3 lightPos = glm::vec3(sin(glfwGetTime()) * 3.0f, sin(glfwGetTime()*0.5f) * 3.0f, cos(glfwGetTime()) * 3.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		
 		ourShader.use();
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			ourShader.setBool("flashlightOn", true);
-		}
-		else {
-			ourShader.setBool("flashlightOn", false);
-		}
-		ourShader.setVec3("viewPos", camera.Position);
-		ourShader.setFloat("shininess", 64.0f);
+		//ourShader.setVec3("viewPos", camera.Position);
+		//ourShader.setFloat("shininess", 64.0f);
 
+		/*
 		// directional light
 		ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 		ourShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
@@ -202,54 +183,31 @@ int main()
 		ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 		// point light 1
 		ourShader.setVec3("pointLights[0].position", lightPos);
-		ourShader.setVec3("pointLights[0].ambient", (0.05f * lightColorArray[0]));
-		ourShader.setVec3("pointLights[0].diffuse", (0.5f * lightColorArray[0]));
-		ourShader.setVec3("pointLights[0].specular", lightColorArray[0]);
+		ourShader.setVec3("pointLights[0].ambient", (0.05f * lightColor));
+		ourShader.setVec3("pointLights[0].diffuse", (0.5f * lightColor));
+		ourShader.setVec3("pointLights[0].specular", lightColor);
 		ourShader.setFloat("pointLights[0].constant", lightConstant);
 		ourShader.setFloat("pointLights[0].linear", linearConstant);
 		ourShader.setFloat("pointLights[0].quadratic", quadraticConstant);
-		// spotLight
-		ourShader.setVec3("spotLight.position", camera.Position);
-		ourShader.setVec3("spotLight.direction", camera.Front);
-		ourShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		ourShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		ourShader.setFloat("spotLight.constant", 1.0f);
-		ourShader.setFloat("spotLight.linear", 0.09f);
-		ourShader.setFloat("spotLight.quadratic", 0.032f);
-		ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));  
+		*/
 
 		
 		
 
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 1920.0f / 1080.0f, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		
 		ourShader.setMat4("projection", projection);
 		ourShader.setMat4("view", view);
+		ourShader.setFloat("time", glfwGetTime());
 		
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));		// it's a bit too big for our scene, so scale it down
+		model = glm::scale(model, glm::vec3(2.0f));		// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
-		ourModel.Draw(ourShader);
+		wavePlane.Draw(ourShader);
 		
 		
-
-		glBindVertexArray(lightCubeVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-		lightCubeShader.use();
-		lightCubeShader.setVec3("lightColor", lightColorArray[0]);
-		lightCubeShader.setMat4("projection", projection);
-		lightCubeShader.setMat4("view", view);
-
-	    model = glm::mat4(1.0f);
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.25f));		
-		lightCubeShader.setMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
         glfwSwapBuffers(window);

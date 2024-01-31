@@ -1,0 +1,14 @@
+newmtl StAlphage2024_01_Model_5:StAlphage2024_01_Model_5_u1_v1
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd StAlphage2024_01_Model_5_u1_v1_diffuse.jpg
+Ni 1.00
+newmtl blinn1SG
+illum 4
+Kd 0.50 0.50 0.50
+Ka 0.00 0.00 0.00
+Tf 0.48 0.48 0.48
+Ni 1.00
+Ks 0.50 0.50 0.50
