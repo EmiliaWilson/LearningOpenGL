@@ -68,6 +68,42 @@ public:
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
 	}
+
+	void attachGeometryShader(const char* geometryPath) {
+		// 1. retrieve the geometry source code from filePath
+		std::string geometryCode;
+		std::ifstream gShaderFile;
+		// ensure ifstream objects can throw exceptions:
+		gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		try {
+			// open files
+			gShaderFile.open(geometryPath);
+			std::stringstream gShaderStream;
+			// read file's buffer contents into streams
+			gShaderStream << gShaderFile.rdbuf();
+			// close file handlers
+			gShaderFile.close();
+			// convert stream into string
+			geometryCode = gShaderStream.str();
+		}
+		catch (std::ifstream::failure& e) {
+			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+		}
+		const char* gShaderCode = geometryCode.c_str();
+		// 2. compile shader
+		unsigned int geometry;
+		// geometry shader
+		geometry = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometry, 1, &gShaderCode, NULL);
+		glCompileShader(geometry);
+		checkCompileErrors(geometry, "GEOMETRY");
+		// shader Program
+		glAttachShader(ID, geometry);
+		glLinkProgram(ID);
+		checkCompileErrors(ID, "PROGRAM");
+		// delete the shaders as they're linked into our program now and no longer necessary
+		glDeleteShader(geometry);
+	}
 	// activate the shader
 	// ------------------------------------------------------------------------
 	void use() {
@@ -89,6 +125,14 @@ public:
 	// ------------------------------------------------------------------------
 	void setMat4(const std::string& name, glm::mat4 value) const {
 		glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	// ------------------------------------------------------------------------
+	void setVec2(const std::string& name, glm::vec2 value) const {
+		glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+	}
+	// ------------------------------------------------------------------------
+	void setVec2(const std::string& name, float x, float y) const {
+		glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
 	}
 	// ------------------------------------------------------------------------
 	void setVec3(const std::string& name, glm::vec3 value) const {

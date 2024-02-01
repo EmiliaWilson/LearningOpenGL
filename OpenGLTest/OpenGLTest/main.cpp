@@ -28,7 +28,7 @@ const unsigned int SCR_HEIGHT = 1080;
 
 //time values
 float deltaTime = 0.0f; // Time between current frame and last frame
-float lastFrame = 0.0f; // Time of last frame
+float lastFrameTime = 0.0f; // Time of last frame
 
 //camera values
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -81,11 +81,32 @@ int main()
 
     Shader ourShader("lightShader.vs", "lightShader.fs");
 	Shader lightCubeShader("lightCubeShader.vs", "lightCubeShader.fs");
+	Shader normalShader("normalShader.vs", "normalShader.fs");
+	normalShader.attachGeometryShader("geometryShader.gs");
+
+	ourShader.use();
+	// directional light
+	ourShader.setVec3("dirLight.direction", -2.0f, -2.0f, 0.0f);
+	ourShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	ourShader.setVec3("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
+	ourShader.setVec3("dirLight.specular", 1.0f, 1.0f, 1.0f);
+
+
+	ourShader.setVec3("material.diffuse", 0.1f, 0.2f, 0.4f);
+	ourShader.setVec3("material.specular", glm::vec3(0.7f));
+	ourShader.setFloat("material.shininess", 1024.0f);
+
+	ourShader.setFloat("time", glfwGetTime());
+
+	normalShader.use();
+	normalShader.setFloat("time", glfwGetTime());
+
+
 
 	Model wavePlane("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\waves\\wavePlane.obj");
 
 	//light model
-
+	/*
 	float vertices[] = {
 		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
@@ -146,13 +167,10 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
+	*/
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	//pointLight equation constants
-	float lightConstant = 1.0f;
-	float linearConstant = 0.07f;
-	float quadraticConstant = 0.017f;
 	
 	
 	glm::vec3 lightColor = glm::vec3(1.0f);
@@ -160,27 +178,23 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-		float currentFrame = static_cast <float>(glfwGetTime());
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;  
+		float currentFrameTime = static_cast <float>(glfwGetTime());
+		deltaTime = currentFrameTime - lastFrameTime;
+		lastFrameTime = currentFrameTime;  
 
         processInput(window);
 
 
-        glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
+        glClearColor(0.7f, 0.7f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		
 		ourShader.use();
-		//ourShader.setVec3("viewPos", camera.Position);
-		//ourShader.setFloat("shininess", 64.0f);
+		ourShader.setVec3("viewPos", camera.Position);
+		ourShader.setFloat("shininess", 64.0f);
 
+		
 		/*
-		// directional light
-		ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		ourShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		ourShader.setVec3("dirLight.diffuse", 0.25f, 0.25f, 0.25f);
-		ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 		// point light 1
 		ourShader.setVec3("pointLights[0].position", lightPos);
 		ourShader.setVec3("pointLights[0].ambient", (0.05f * lightColor));
@@ -199,13 +213,23 @@ int main()
 		
 		ourShader.setMat4("projection", projection);
 		ourShader.setMat4("view", view);
-		ourShader.setFloat("time", glfwGetTime());
+		ourShader.setFloat("time", currentFrameTime);
 		
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(2.0f));		// it's a bit too big for our scene, so scale it down
+		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
+		//model = glm::scale(model, glm::vec3(1.0f));		// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		wavePlane.Draw(ourShader);
+
+		/*
+		normalShader.use();
+		normalShader.setFloat("time", currentFrameTime);
+		normalShader.setMat4("projection", projection);
+		normalShader.setMat4("view", view);
+		normalShader.setMat4("model", model);
+		wavePlane.Draw(normalShader);
+		*/
 		
 		
 

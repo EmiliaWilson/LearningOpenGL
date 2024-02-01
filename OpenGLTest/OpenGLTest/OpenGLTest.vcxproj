@@ -147,12 +147,15 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="geometryShader.gs" />
     <None Include="lightCubeShader.vs" />
     <None Include="lightShader.fs" />
     <None Include="lightShader.vs" />
     <None Include="lightCubeShader.fs" />
     <None Include="modelShader.fs" />
     <None Include="modelShader.vs" />
+    <None Include="normalShader.fs" />
+    <None Include="normalShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGLTest.rc" />
