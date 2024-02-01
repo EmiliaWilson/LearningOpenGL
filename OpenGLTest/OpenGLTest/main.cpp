@@ -86,15 +86,15 @@ int main()
 
 	ourShader.use();
 	// directional light
-	ourShader.setVec3("dirLight.direction", -2.0f, -1.0f, 0.0f);
-	ourShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	ourShader.setVec3("dirLight.direction", -1.5f, -1.0f, 0.0f);
+	ourShader.setVec3("dirLight.ambient", 0.1f, 0.1f, 0.1f);
 	ourShader.setVec3("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
 	ourShader.setVec3("dirLight.specular", 0.75f, 0.75f, 0.75f);
 
 
-	ourShader.setVec3("material.diffuse", 1.0f, 1.0f, 1.0f);
-	ourShader.setVec3("material.specular", glm::vec3(1.0f));
-	ourShader.setFloat("material.shininess", 1024.0f);
+	ourShader.setVec3("material.diffuse", 0.1f, 0.2f, 0.4f);
+	ourShader.setVec3("material.specular", 0.7f, 0.7f, 0.8f);
+	ourShader.setFloat("material.shininess", 256.0f);
 
 	ourShader.setFloat("time", glfwGetTime());
 
@@ -191,7 +191,6 @@ int main()
 		
 		ourShader.use();
 		ourShader.setVec3("viewPos", camera.Position);
-		ourShader.setFloat("shininess", 64.0f);
 
 		
 		/*
@@ -217,14 +216,14 @@ int main()
 		
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(1.0f));		// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		wavePlane.Draw(ourShader);
 
 		/*
 		normalShader.use();
-		normalShader.setFloat("time", currentFrameTime);
+		//normalShader.setFloat("time", currentFrameTime);
 		normalShader.setMat4("projection", projection);
 		normalShader.setMat4("view", view);
 		normalShader.setMat4("model", model);

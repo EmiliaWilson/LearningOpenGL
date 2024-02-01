@@ -10,15 +10,15 @@ uniform mat4 model;
 
 uniform float time;
 
-#define NUM_WAVES 5
+#define NUM_WAVES 2
 
 void main()
 {
 
     vec3 worldView = vec3(model * vec4(aPos, 1.0));
     float iter = 0;
-    float amp = .5;
-    float wavelength = 1;
+    float amp = .1;
+    float wavelength = 0.5;
     float freq = (2/wavelength);
     float speed = 1;
     float phase = speed * (2/wavelength);
@@ -29,11 +29,11 @@ void main()
     for (int i = 0; i < NUM_WAVES; i++) {
         vec2 randDir = normalize(vec2(sin(iter), cos(iter)));
         float x = dot(randDir,worldView.xz) * freq + time * phase;
-        yVal += (amp * sin(x));
-        binormalY += (amp * wavelength * randDir.x * cos(x));
-        tangentY += (amp * wavelength * randDir.y * cos(x));
-        amp = amp * 0.5;
-        freq = freq * 2;
+        yVal += (amp * exp(sin(x)-1));
+        binormalY += (amp * freq * randDir.x * cos(x) * exp(sin(x) - 1));
+        tangentY += (amp * freq * randDir.y * cos(x) * exp(sin(x) - 1));
+        amp = amp * 0.4;
+        freq = freq * 1.12;
         phase *= 1.18;
         iter += 1232.323;
     }
@@ -47,5 +47,5 @@ void main()
     vec3 fragPos = vec3(vec4(worldView.x, yVal, worldView.z, 1.0));
     
 
-    gl_Position =  view * vec4(fragPos, 1.0);
+    gl_Position = view * vec4(fragPos, 1.0);
 }
