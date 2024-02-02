@@ -29,7 +29,7 @@ struct PointLight {
     vec3 specular;
 };
 
-
+//vec3 calcReflection(vec3 normal, vec3 viewDir);
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
@@ -50,12 +50,13 @@ uniform  PointLight pointLights[NR_POINT_LIGHTS];
 
 void main()
 {
-    vec3 viewDir = normalize (viewPos-FragPos);
+    vec3 viewDir = normalize(viewPos-FragPos);
     //vec3 result = vec3(0.0, 0.0, 0.0);
     vec3 result = CalcDirLight(dirLight, Normal, viewDir);
     //for (int i = 0; i < NR_POINT_LIGHTS; i++) {
     //    result += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
     //}
+    //result += calcReflection(Normal, viewDir);
     result = pow(result, vec3(1.0/2.2)); //gamma correction
     FragColor = vec4(result, 1.0);
 }
@@ -72,7 +73,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * material.specular;
 
-    return (ambient + diffuse + specular);
+    return (ambient + diffuse);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {

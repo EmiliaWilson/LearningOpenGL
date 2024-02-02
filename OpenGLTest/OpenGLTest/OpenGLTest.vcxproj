@@ -156,6 +156,8 @@
     <None Include="modelShader.vs" />
     <None Include="normalShader.fs" />
     <None Include="normalShader.vs" />
+    <None Include="skyboxShader.fs" />
+    <None Include="skyboxShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGLTest.rc" />

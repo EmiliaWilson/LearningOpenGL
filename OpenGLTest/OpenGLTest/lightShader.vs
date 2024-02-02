@@ -9,7 +9,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-#define NUM_WAVES 8
+#define NUM_WAVES 24
 void main()
 {
     vec3 worldView = vec3(model * vec4(aPos, 1.0));
@@ -29,9 +29,8 @@ void main()
         yVal += (amp * exp(sin(x)-1));
         binormalY += (amp * freq * randDir.x * cos(x) * exp(sin(x) - 1));
         tangentY += (amp * freq * randDir.y * cos(x) * exp(sin(x) - 1));
-        amp = amp * 0.82;
-        freq = freq * 1.18;
-        phase *= 1.18;
+        amp = amp * 0.72;
+        freq = freq * 1.26;
         iter += 1232.323;
     }
 
