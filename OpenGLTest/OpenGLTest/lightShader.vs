@@ -38,8 +38,8 @@ void main()
     vec3 binormal = vec3(1, binormalY, 0);
     vec3 tangent = vec3(0, tangentY, 1);
     vec3 norm = cross(tangent, binormal);
-    mat3 normalMatrix = mat3(transpose(inverse(view)));
-    Normal = normalize(vec3(vec4(normalMatrix * norm, 0.0)));
+    mat3 normalMatrix = mat3(transpose(inverse(model)));
+    Normal = normalize(normalMatrix * norm);
     FragPos = vec3(vec4(worldView.x, yVal, worldView.z, 1.0));
     
 

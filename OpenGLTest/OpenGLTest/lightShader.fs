@@ -29,7 +29,7 @@ struct PointLight {
     vec3 specular;
 };
 
-//vec3 calcReflection(vec3 normal, vec3 viewDir);
+vec3 calcReflection(vec3 normal, vec3 viewDir);
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
@@ -38,6 +38,8 @@ out vec4 FragColor;
 in vec3 Normal;
 
 in vec3 FragPos;
+
+uniform samplerCube skybox;
 
 uniform vec3 viewPos;
 
@@ -61,6 +63,13 @@ void main()
     FragColor = vec4(result, 1.0);
 }
 
+vec3 calcReflection(vec3 normal, vec3 viewDir) {
+    float reflectAmount = 1.0;
+    float ratio = 1.00 / 1.33;
+    vec3 R = refract(viewDir, normal, ratio);
+    return (reflectAmount * texture(skybox, R).rgb);
+}
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 lightDir = normalize(-light.direction);
     vec3 halfwayDir = normalize(lightDir + viewDir);
@@ -73,7 +82,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * material.specular;
 
-    return (ambient + diffuse);
+    return (ambient + diffuse + specular);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {

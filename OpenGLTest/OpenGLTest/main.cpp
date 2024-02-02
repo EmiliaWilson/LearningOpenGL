@@ -80,11 +80,11 @@ int main()
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LEQUAL);
 
     Shader ourShader("lightShader.vs", "lightShader.fs");
 	Shader lightCubeShader("lightCubeShader.vs", "lightCubeShader.fs");
-	//Shader skyboxShader("skyboxShader.vs", "skyboxShader.fs");
+	Shader skyboxShader("skyboxShader.vs", "skyboxShader.fs");
 	Shader normalShader("normalShader.vs", "normalShader.fs");
 	normalShader.attachGeometryShader("geometryShader.gs");
 
@@ -102,18 +102,18 @@ int main()
 
 	ourShader.setFloat("time", glfwGetTime());
 
-	//ourShader.setInt("skybox", 0);
+	ourShader.setInt("skybox", 0);
 
 	normalShader.use();
 	normalShader.setFloat("time", glfwGetTime());
 
-	//skyboxShader.use();
-	//skyboxShader.setInt("skybox", 0);
+	skyboxShader.use();
+	skyboxShader.setInt("skybox", 0);
 
 
 	Model wavePlane("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\waves\\wavePlane.obj");
 
-	/*
+	
 
 	float skyboxVertices[] = {
 		// positions
@@ -185,7 +185,7 @@ int main()
 	stbi_set_flip_vertically_on_load(false);
 	unsigned int cubemapTexture = loadCubemap(faces);
 	stbi_set_flip_vertically_on_load(true);
-	*/
+	
 	
 	//light model
 	/*
@@ -301,7 +301,7 @@ int main()
 		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(0.5f));		// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		wavePlane.Draw(ourShader);
 
 		/*
@@ -311,7 +311,7 @@ int main()
 		normalShader.setMat4("view", view);
 		normalShader.setMat4("model", model);
 		wavePlane.Draw(normalShader);
-		
+		*/
 
 		skyboxShader.use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
@@ -321,7 +321,7 @@ int main()
 		glBindVertexArray(skyboxVAO);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		*/
+		
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
