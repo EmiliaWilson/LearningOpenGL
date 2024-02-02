@@ -14,7 +14,7 @@ void main()
 {
     vec3 worldView = vec3(model * vec4(aPos, 1.0));
     float iter = 0;
-    float amp = .066;
+    float amp = .08;
     float wavelength = 0.75;
     float freq = (2/wavelength);
     float speed = 1;
