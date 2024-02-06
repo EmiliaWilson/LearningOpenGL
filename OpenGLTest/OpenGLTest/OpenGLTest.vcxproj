@@ -156,6 +156,8 @@
     <None Include="modelShader.vs" />
     <None Include="normalShader.fs" />
     <None Include="normalShader.vs" />
+    <None Include="postProcessingShader.fs" />
+    <None Include="postProcessingShader.vs" />
     <None Include="skyboxShader.fs" />
     <None Include="skyboxShader.vs" />
   </ItemGroup>

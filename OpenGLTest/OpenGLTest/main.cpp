@@ -85,6 +85,7 @@ int main()
     Shader ourShader("lightShader.vs", "lightShader.fs");
 	Shader lightCubeShader("lightCubeShader.vs", "lightCubeShader.fs");
 	Shader skyboxShader("skyboxShader.vs", "skyboxShader.fs");
+	Shader postProcessingShader("postProcessingShader.vs", "postProcessingShader.fs");
 	Shader normalShader("normalShader.vs", "normalShader.fs");
 	normalShader.attachGeometryShader("geometryShader.gs");
 
@@ -100,6 +101,9 @@ int main()
 	ourShader.setVec3("material.specular", 0.7f, 0.7f, 0.8f);
 	ourShader.setFloat("material.shininess", 256.0f);
 
+	ourShader.setFloat("fog.density", 0.05);
+	ourShader.setVec3("fog.color", glm::vec3(0.9));
+
 	ourShader.setFloat("time", glfwGetTime());
 
 	ourShader.setInt("skybox", 0);
@@ -110,10 +114,36 @@ int main()
 	skyboxShader.use();
 	skyboxShader.setInt("skybox", 0);
 
+	postProcessingShader.use();
+	postProcessingShader.setInt("screenTexture", 0);
+	postProcessingShader.setFloat("exposure", 5.0);
+
 
 	Model wavePlane("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\waves\\wavePlane.obj");
 
-	
+	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		// positions   // texCoords
+		-1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f,
+
+		-1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f
+	};
+
+	unsigned int quadVBO, quadVAO;
+	glGenBuffers(1, &quadVBO);
+	glGenVertexArrays(1, &quadVAO);
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2*sizeof(float)));
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	float skyboxVertices[] = {
 		// positions
@@ -185,7 +215,30 @@ int main()
 	stbi_set_flip_vertically_on_load(false);
 	unsigned int cubemapTexture = loadCubemap(faces);
 	stbi_set_flip_vertically_on_load(true);
-	
+
+	//generate framebuffer for post-processing effect
+	unsigned int framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	//texture for post-processing quad
+	unsigned int textureColorBuffer;
+	glGenTextures(1, &textureColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0);
+
+	//renderbuffer object for depth and stencil
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: framebuffer is not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 	//light model
 	/*
@@ -266,6 +319,9 @@ int main()
 
         processInput(window);
 
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		glEnable(GL_DEPTH_TEST);
+
 
         glClearColor(0.7f, 0.7f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -299,7 +355,7 @@ int main()
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
 		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
-		//model = glm::scale(model, glm::vec3(4.0f));		// it's a bit too big for our scene, so scale it down
+		model = glm::scale(model, glm::vec3(8.0f));		// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		wavePlane.Draw(ourShader);
@@ -321,7 +377,17 @@ int main()
 		glBindVertexArray(skyboxVAO);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//render post processing quad
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_DEPTH_TEST);
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		
+		postProcessingShader.use();
+		glBindVertexArray(quadVAO);
+		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

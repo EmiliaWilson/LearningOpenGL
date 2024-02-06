@@ -4,6 +4,7 @@ layout (location = 0) in vec3 aPos;
 vec3 calcWave(vec2 position, vec2 randDir, float freq, float timeshift);
 vec3 getWaves(vec2 position, int interations);
 
+
 out vec3 FragPos;
 out vec3 Normal;
 

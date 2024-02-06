@@ -73,6 +73,12 @@
     <None Include="skyboxShader.vs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="postProcessingShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="postProcessingShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGLTest.rc">

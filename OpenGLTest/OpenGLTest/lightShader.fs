@@ -29,9 +29,18 @@ struct PointLight {
     vec3 specular;
 };
 
+struct FogParams {
+    vec3 color;
+
+    float density;
+    float fogStart;
+    float fogEnd;
+};
+
 vec3 calcReflection(vec3 normal, vec3 viewDir);
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 calcFog(FogParams fog, vec3 inputColor, vec3 viewPos, vec3 fragPos);
 
 out vec4 FragColor;
 
@@ -47,6 +56,8 @@ uniform Material material;
 
 uniform  DirLight dirLight;
 
+uniform FogParams fog;
+
 #define NR_POINT_LIGHTS 1
 uniform  PointLight pointLights[NR_POINT_LIGHTS];
 
@@ -59,7 +70,7 @@ void main()
     //    result += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
     //}
     result += calcReflection(Normal, viewDir);
-    result = pow(result, vec3(1.0/2.2)); //gamma correction
+    //result = calcFog(fog, result, viewPos, FragPos);
     FragColor = vec4(result, 1.0);
 }
 
@@ -104,4 +115,15 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     specular *= attenuation;
         
     return (ambient + diffuse + specular);
+}
+
+//works but ugly
+vec3 calcFog(FogParams fog, vec3 inputColor, vec3 viewPos, vec3 fragPos) {
+    float fragDistance = length(viewPos - fragPos);
+    float near = 0.1;
+    float far = 100;
+    float ndc = gl_FragCoord.z * 2.0 - 1.0;
+    float linearDepth = (2.0 * near * far) / (far * near - ndc * (far - near));
+    float fogValue = 1.0 - clamp((exp(-fog.density * fragDistance)), 0.0, 1.0);
+    return mix(inputColor, fog.color, fogValue);
 }
