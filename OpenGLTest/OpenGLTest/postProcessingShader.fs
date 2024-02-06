@@ -13,6 +13,6 @@ void main ()
 	const float gamma = 2.2;
 	vec3 color = texture(screenTexture, TexCoords).rgb;
 	vec3 result = vec3(1.0) - exp(-color * exposure);
-	result = pow(result, vec3(1.0 / gamma));
+	result = pow(color, vec3(1.0 / gamma));
 	FragColor = vec4(result, 1.0);
 }

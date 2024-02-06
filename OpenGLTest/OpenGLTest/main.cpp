@@ -116,7 +116,7 @@ int main()
 
 	postProcessingShader.use();
 	postProcessingShader.setInt("screenTexture", 0);
-	postProcessingShader.setFloat("exposure", 5.0);
+	postProcessingShader.setFloat("exposure", 2.0);
 
 
 	Model wavePlane("C:\\Users\\Jake\\source\\repos\\EmiliaWilson\\LearningOpenGL\\models\\waves\\wavePlane.obj");
@@ -323,7 +323,7 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 
-        glClearColor(0.7f, 0.7f, 0.4f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		
